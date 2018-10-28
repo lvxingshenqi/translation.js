@@ -79,6 +79,14 @@ export default function(options: RequestOptions): Promise<any> {
         })
       }
     )
+    
+    req.on('socket', function(socket) {
+        socket.setTimeout(10000);
+        socket.on('timeout', function() {
+            console.log('socket timeout');
+            req.abort();
+        });
+    });
 
     req.on('error', e => {
       reject(getError(ERROR_CODE.NETWORK_ERROR, e.message))
